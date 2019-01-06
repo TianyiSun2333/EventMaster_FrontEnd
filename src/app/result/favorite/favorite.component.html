@@ -1,0 +1,33 @@
+<div *ngIf="mode === 'favorite'">
+  <button [disabled]="disabled"
+    (click)="onClickFavorite()"
+    class="btn btn-light border rounded">
+    <i
+      class="material-icons align-middle"
+      *ngIf="!isFavorite">
+      star_border
+    </i>
+    <i
+      class="material-icons text-warning align-middle"
+      *ngIf="isFavorite">
+      star
+    </i>
+  </button>
+</div>
+<div *ngIf="mode === 'trash'">
+  <button
+    (click)="onClickFavorite()"
+    class="btn btn-light border rounded">
+    <i
+      class="material-icons align-middle">
+      delete
+    </i>
+  </button>
+</div>
+
+
+
+
+
+
+

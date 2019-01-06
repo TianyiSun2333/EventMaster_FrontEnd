@@ -1,0 +1,100 @@
+<!--<navbar [events]="events"></navbar>-->
+<div class="container">
+  <div class="progress mt-5" [hidden]="dataGot || mode === 'Details'">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
+         aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+  </div>
+  <div *ngIf="error" class="mt-5">
+    <app-error></app-error>
+  </div>
+  <div *ngIf="!error">
+    <div class="container">
+      <!--<div [@inOutEvents]="isModeDetail? 'out' : 'in'" class="row justify-content-end"-->
+      <!--[hidden]="!dataGot || mode === 'Details' || events === undefined">-->
+      <div [@inOutEvents]="onFlyInEvents ? 'inEvents' : 'outEvents'" class="row justify-content-end"
+           [hidden]="(!dataGot || mode === 'Details' || events === undefined) && (events !== undefined || mode !== 'Favorites')">
+        <button class="btn btn-light border mt-3"
+                (click)="prevMode = mode; mode = 'Details'; onFlyInDetail = true; onFlyInEvents = false;"
+                [disabled]="!detailClickable">
+          <span class="align-middle">Details</span>
+          <i class="material-icons align-middle">
+            chevron_right
+          </i>
+        </button>
+      </div>
+      <!--<div [@inOutDetail]="isModeDetail? 'in' : 'out'" *ngIf="mode === 'Details'" class="mb-3">-->
+      <div [hidden]="mode !== 'Details'" class="mb-3">
+        <div *ngIf="currentDetails">
+          <h5 class="mt-3 text-center row justify-content-center">{{ currentDetails? currentDetails['name'] : '' }}</h5>
+        </div>
+        <div [@inOutDetail]="onFlyInDetail ? 'inDetail' : 'outDetail'" class="row justify-content-between">
+          <button class="btn btn-light border" (click)="mode = prevMode; onFlyInDetail = false; onFlyInEvents = true">
+            <i class="material-icons align-middle">
+              chevron_left
+            </i>
+            <span class="align-middle">List</span>
+          </button>
+          <div class="row" *ngIf="currentEvent">
+            <div class="rounded pt-1 align-items-center text-center" style="background: #4ba0eb; width: 40px;
+          border-color: #4ba0eb">
+              <a class="twitter-share-button"
+                 [href]="'https://twitter.com/intent/tweet?text=Check%20out%20'
+               + reformat(currentEvent['name'])
+               + '%20located%20at%20'
+               + reformat(currentEvent['venue'])
+               + '.%20Website%3A&url='
+               + currentDetails['buy'] + '&hashtags=CSCI571EventSearch'"
+                 target="_blank">
+                <img src="http://csci571.com/hw/hw8/Images/Twitter.png" alt="button to post a twitter" style="width: 30px"
+                     class="img-fluid">
+              </a>
+            </div>
+
+            <favorite
+              [isFavorite]="currentEvent ? currentEvent['isFavorited'] : false"
+              [mode]="'favorite'"
+              (favorite)="onClickFavFromDetail($event, currentDetails)"
+              [event]="currentEvent"
+              [disabled]="!venueGot"></favorite>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--<div [@inOutEvents]="isModeDetail? 'out' : 'in'" class="row justify-content-center"-->
+       <!--*ngIf="!(!dataGot || mode !== 'Results')">-->
+  <div [@inOutEvents]="onFlyInEvents? 'inEvents' : 'outEvents'" class="row justify-content-center"
+       [hidden]="!dataGot || mode !== 'Results'">
+    <res-table class="w-100" [events]="events" [currentId]="currentEvent ? currentEvent['id'] : ''"
+               (favorite)="setFavorite($event)"
+               (reqDetail)="getDetail($event)" (reqArtists)="getArtists($event)"
+               (reqUpComingEvents)="getUpComingEvents($event)" (reqImages)="getImages($event)"
+    [favIdFromDetail]="favoritedId" [currentDetailIsFav]="currentDetailIsFav" [flag]="flag"></res-table>
+  </div>
+  <div class="row justify-content-center" *ngIf="!(!dataGot || mode !== 'Favorites')">
+    <favorites class="w-100" [currentId]="currentEvent ? currentEvent['id'] : ''" (unsetfavorite)="unsetFavorite($event)"
+               (reqDetailFromFav)="getDetailForFav($event)"
+               (reqArtistsFromFav)="getArtists($event)" (reqImagesFromFav)="getImages($event)"
+               (reqUpComingEventsFromFav)="getUpComingEvents($event)"></favorites>
+  </div>
+  <div [@inOutDetail]="onFlyInDetail ? 'inDetail' : 'outDetail'" class="row justify-content-center"
+       [hidden]="mode !== 'Details'">
+  <!--<div class="row justify-content-center" [hidden]="mode !== 'Details'">-->
+    <detail class="event-detail w-100" [mode]="'Event'" [artists]="artists"
+            [details]="currentDetails"
+             [images]="images"
+            [isMusic]="isMusic" [teams]="teams"
+            (unsetfavorite)="unsetFavorite($event)" (venueGot)="venueOnGet()" [upComingEvents]="upComingEvents"
+            [clear]="clear"
+            [search]="search"
+    [error]="error"></detail>
+  </div>
+  <div class="progress mt-5" [hidden]="dataGot || mode === 'Results' || mode === 'Favorites'">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
+         aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+  </div>
+</div>
+
+

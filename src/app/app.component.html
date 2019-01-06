@@ -1,0 +1,18 @@
+<div class="container">
+  <event-search-form
+    class="row justify-content-center"
+    (loaded)="onLoaded($event)"
+    (clear)="onClear()"
+    (search)="onSearch()"
+  (error)="onError()">
+  </event-search-form>
+  <navbar class="row justify-content-center mt-4" [search]="search" [clear]="clear" [mode]="mode"
+          (changeMode)="changeMode($event)">
+  </navbar>
+  <result class="row justify-content-center" [search]="search" [clear]="clear" [events]="events" [mode]="mode"
+          [error]="error"
+  ></result>
+</div>
+
+
+

@@ -1,0 +1,52 @@
+<div class="container mt-lg-5 text-nowrap">
+  <div *ngIf="events && events.length > 0">
+    <table class="table table-hover"  style="min-width: 700px;">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Date</th>
+        <th scope="col">Event</th>
+        <th scope="col">Category</th>
+        <th scope="col">Venue Info</th>
+        <th scope="col">Favorite</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let event of events; trackBy trackEvent; let i = index">
+      <tr [class.selected-event]="currentId === event['id']">
+        <th class="align-middle" scope="row">{{ i + 1 }}</th>
+        <td class="align-middle">{{ event['date'] }}</td>
+        <td class="align-middle">
+          <a
+            (click)="reqDetailHandler(event, i)"
+            href="javascript: void(0)"
+            class="btn-link"
+            [matTooltip]="event['name']"
+          >
+            {{ cutName(event['name']) }}
+          </a>
+        </td>
+        <td class="align-middle">
+          <div *ngIf="event['genre'] || event['segment']">
+            <span *ngIf="event['genre']">{{ event['genre'] }}</span>
+            <span *ngIf="event['genre'] && event['segment']"> - </span>
+            <span *ngIf="event['segment']">{{ event['segment'] }}</span>
+          </div>
+        </td>
+        <td class="align-middle">{{ event['venue'] }}</td>
+        <td
+          class="align-middle">
+          <favorite
+            [isFavorite]="(event['isFavorited'] ? true : false) && (event['id'] === favIdFromDetail ? currentDetailIsFav : true)"
+            [mode]="'favorite'"
+            (favorite)="setFavorite($event, i)"
+            [event]="event"></favorite>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="events && events.length <= 0" class="container p-0 mt-3">
+    <norecord></norecord>
+  </div>
+</div>
+

@@ -1,0 +1,179 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <div class="form-group">
+    <label for="keyword">Keyword</label>
+    <input
+      required
+      ngModel
+      name="keyword"
+      #keyword="ngModel"
+      id="keyword"
+      type="text"
+      class="form-control">
+    <div class="alert alert-danger"
+         *ngIf="keyword.touched && !keyword.valid">
+      Please enter a keyword.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="category">Category</label>
+    <select [(ngModel)]="category"
+            name="category"
+            id="category"
+            class="form-control">
+      <option value="All">All</option>
+      <option value="Music">Music</option>
+      <option value="Sports">Sports</option>
+      <option value="Arts & Theatre">Arts & Theatre</option>
+      <option value="Film">Film</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+    </select>
+  </div>
+
+
+  <div class="form-group">
+    <label for="distance">Distance</label>
+    <input
+      pattern="^[0-9]+$"
+      ngModel
+      name="radius"
+      #distance="ngModel"
+      placeholder="10"
+      id="distance"
+      type="text"
+      class="form-control">
+    <div class="alert alert-danger"
+         *ngIf="!distance.valid">
+      Distance can only be digits.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <select [(ngModel)]="unit"
+            name="unit"
+            class="form-control">
+      <option value="miles">Miles</option>
+      <option value="km">Kilometers</option>
+    </select>
+  </div>
+  <!--<div ngModelGroup="position">-->
+    <!--<div class="form-group">-->
+      <!--<label for="location">Current location</label>-->
+      <!--<input-->
+        <!--required-->
+        <!--ngModel-->
+        <!--name="address"-->
+        <!--#address="ngModel"-->
+        <!--id="location"-->
+        <!--type="text"-->
+        <!--class="form-control">-->
+      <!--<div class="alert alert-danger"-->
+           <!--*ngIf="address.touched && !address.valid">-->
+        <!--Please enter a location.-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+      <!--<label for="address">Other. Please specify:</label>-->
+      <!--<input-->
+        <!--required-->
+        <!--ngModel-->
+        <!--name="address"-->
+        <!--#address="ngModel"-->
+        <!--id="address"-->
+        <!--type="text"-->
+        <!--class="form-control">-->
+      <!--<div class="alert alert-danger"-->
+           <!--*ngIf="address.touched && !address.valid">-->
+        <!--Please enter a location.-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+
+
+  <div ngModelGroup="position" #position="ngModelGroup" (load)="log(position)">
+    <div class="form-check">
+      <input [(ngModel)]="positionMode"
+             class="form-check-input"
+             type="radio"
+             name="positionMode"
+             value="location"
+             id="location-radio">
+      <label class="form-check-label" for="location-radio">
+        Current location
+      </label>
+      <input
+        hidden
+        ngModel
+        name="location"
+        #location="ngModel"
+        id="location"
+        type="text">
+    </div>
+    <div class="form-check">
+      <input [(ngModel)]="positionMode"
+             class="form-check-input"
+             type="radio"
+             name="positionMode"
+             value="address"
+             id="address-radio">
+      <label class="form-check-label" for="address">
+        Other. Please specify:
+      </label>
+      <input
+        [disabled]="positionMode=='location'"
+        ngModel
+        name="address"
+        #address="ngModel"
+        id="address"
+        type="text"
+        class="form-control">
+       <!--<input [disabled]="positionMode=='location'" type="text">-->
+    </div>
+    <p>
+      <!--{{ form.value | json }}-->
+      <!--{{position.value.positionMode | json }}-->
+    </p>
+  </div>
+
+
+  <!--<div ngModelGroup="position" #position="ngModelGroup" (click)="log(position)">-->
+  <!--<div class="form-check">-->
+    <!--<input class="form-check-input" type="radio" name="position-radio" value="location" id="location" checked>-->
+    <!--<label class="form-check-label" for="location">-->
+      <!--Current location-->
+    <!--</label>-->
+    <!--<input hidden>-->
+  <!--</div>-->
+  <!--<div class="form-check">-->
+    <!--<input class="form-check-input" type="radio" name="position-radio" value="address" id="address">-->
+    <!--<label class="form-check-label" for="address">-->
+      <!--Other. Please specify:-->
+    <!--</label>-->
+    <!--<input-->
+      <!--required-->
+      <!--[disabled]=""-->
+      <!--ngModel-->
+      <!--name="address"-->
+      <!--#address="ngModel"-->
+      <!--id=""-->
+      <!--type="text"-->
+      <!--class="form-control">-->
+    <!--<div class="alert alert-danger"-->
+         <!--*ngIf="address.touched && !address.valid">-->
+      <!--Please enter a location.-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+
+
+
+  <button class="btn btn-primary" [disabled]="!form.valid">Search</button>
+</form>
+<p>
+  {{ form.value | json }}
+</p>
+
+
+
+
+

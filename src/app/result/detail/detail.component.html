@@ -1,0 +1,279 @@
+<div *ngIf="!error">
+  <ul class="nav nav-tabs row justify-content-end mb-2">
+    <li class="nav-item">
+      <a class="nav-link" href="javascript: void(0)" [class.active]="mode === 'Event'" (click)="mode = 'Event'">
+        Event</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript: void(0)" [class.active]="mode === 'Artist/Teams'"
+         (click)="mode = 'Artist/Teams'">Artist
+        /Teams</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript: void(0)" [class.active]="mode === 'Venue'" (click)="mode = 'Venue'">Venue</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript: void(0)" [class.active]="mode === 'UpcomingEvents'"
+         (click)="mode = 'UpcomingEvents'">
+        <span *ngIf="screen.width < 500">Upcoming</span>
+        <span *ngIf="screen.width >= 500">UpcomingEvents</span>
+      </a>
+    </li>
+  </ul>
+
+  <table *ngIf="mode === 'Event'" class="table table-striped" style="min-width: 700px;">
+    <tbody>
+    <tr *ngIf="details['teams']">
+      <th scope="row">Artist/Team(s)</th>
+      <td>
+      <span *ngFor="let team of details['teams']; let i = index">
+        <span>{{team['name']}}</span>
+        <span *ngIf="i !== details['teams'].length - 1"> | </span>
+      </span>
+      </td>
+    </tr>
+    <tr *ngIf="details['venue']">
+      <th scope="row">Venue</th>
+      <td>{{details['venue']}}</td>
+    </tr>
+    <tr *ngIf="details['localDate'] || details['localTime']">
+      <th scope="row">Time</th>
+      <td>
+        <span *ngIf="details['localDate']">{{ details['localDate'] | date }}</span>
+        <span *ngIf="details['localTime']"> {{ details['localTime'] }}</span>
+      </td>
+    </tr>
+    <tr *ngIf="details['segment'] || details['genre']">
+      <th scope="row">Category</th>
+      <td>
+        <span *ngIf="details['segment']">{{details['segment']}}</span>
+        <span *ngIf="details['segment'] && details['genre']"> | </span>
+        <span *ngIf="details['genre']">{{details['genre']}}</span>
+      </td>
+    </tr>
+    <tr *ngIf="details['min'] || details['max']">
+      <th scope="row">Price Range</th>
+      <td>
+        <span *ngIf="details['min']">{{details['min'] | currency}}</span>
+        <span *ngIf="details['min'] && details['max']"> ~ </span>
+        <span *ngIf="details['max']">{{details['max'] | currency}}</span>
+      </td>
+    </tr>
+    <tr *ngIf="details['status']">
+      <th scope="row">Ticket Status</th>
+      <td>{{details['status'].substring(0,1).toUpperCase() + details['status'].substring(1)}}</td>
+    </tr>
+    <tr *ngIf="details['buy']">
+      <th scope="row">Buy Ticket At</th>
+      <td><a (click)="onNavigate(details['buy'])" href="javascript: void(0)">TicketMaster</a></td>
+    </tr>
+    <tr *ngIf="details['seatmap']">
+      <th scope="row">Seat Map</th>
+      <td>
+        <a href="javascript: void(0)" data-toggle="modal" data-target="#exampleModal">View Seat Map Here</a>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">View Seat Map</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" *ngIf="details['seatmap']">
+                <a href="javascript: void(0)" (click)="onNavigate(details['seatmap'])">
+                  <img class="img-fluid" [src]="details['seatmap']" alt="seatMap">
+                </a>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light border rounded" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="mode === 'Artist/Teams'">
+    <div *ngIf="images.length <= 0" class="container p-0 mt-5">
+      <norecord></norecord>
+    </div>
+
+    <div *ngFor="let gallery of images; let index = index">
+      <div *ngIf="artists[index] !== undefined && artists[index]['artist'] !== undefined">
+        <h6 class="text-center">{{artists[index]['artist']['name']}}</h6>
+        <table class="table table-striped">
+          <tbody>
+          <tr class="col-1" *ngIf="artists[index]['artist']['name']">
+            <th scope="row">Name</th>
+            <td>{{artists[index]['artist']['name']}}</td>
+          </tr>
+          <tr *ngIf="artists[index]['artist']['followers']">
+            <th scope="row">Followers</th>
+            <td>{{artists[index]['artist']['followers'] | number}}</td>
+          </tr>
+          <tr *ngIf="artists[index]['artist']['popularity']">
+            <th class="align-middle" scope="row">Popularity</th>
+            <td class="d-flex align-items-center">
+              <round-progress
+                [radius]="20"
+                [stroke]="3"
+                [current]="artists[index]['artist']['popularity']"
+                [max]="100"
+                [color]="'#78be32'"
+                [clockwise]="false"
+                [rounded]="true"
+                class="align-middle">
+              </round-progress>
+              <div *ngIf="artists[index]['artist']['popularity'] === 100" style="position: relative">
+              <span
+                style="position: absolute; left: -31.5px; top:-9px; font-size: 13px">
+              {{artists[index]['artist']['popularity']}}
+              </span>
+              </div>
+              <div *ngIf="artists[index]['artist']['popularity'] !== 100" style="position: relative">
+              <span
+                style="position: absolute; left: -27px; top: -9px; font-size: 13px">
+              {{artists[index]['artist']['popularity']}}
+              </span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="artists[index]['artist']['url']">
+            <th scope="row">Check At</th>
+            <td><a href="javascript: void(0)" (click)="onNavigate(artists[index]['artist']['url'])">Spotify</a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <h6 class="mb-3 row justify-content-center">
+        {{teams[index]}}
+      </h6>
+      <div *ngIf="gallery['artist']">
+        <div class="row">
+          <div class="col">
+            <div *ngFor="let image of gallery['artist']; let i = index">
+              <a href="javascript: void(0)" (click)="onNavigate(image)" *ngIf="i % 3 === 0">
+                <img [src]="image" alt="image of artist" class="border rounded img-fluid mb-4 artist-img">
+              </a>
+            </div>
+          </div>
+          <div class="col">
+            <div *ngFor="let image of gallery['artist']; let i = index">
+              <a href="javascript: void(0)" (click)="onNavigate(image)" *ngIf="i % 3 === 1">
+                <img [src]="image" alt="image of artist" class="border rounded img-fluid mb-4 artist-img">
+              </a>
+            </div>
+          </div>
+          <div class="col">
+            <div *ngFor="let image of gallery['artist']; let i = index">
+              <a href="javascript: void(0)" (click)="onNavigate(image)" *ngIf="i % 3 === 2">
+                <img [src]="image" alt="image of artist" class="border rounded img-fluid mb-4 artist-img">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="mode === 'Venue'">
+    <div *ngIf="venue !== undefined">
+      <h6 class="text-center">{{venue['name']}}</h6>
+      <table class="table table-striped">
+        <tbody>
+        <tr *ngIf="venue['address']">
+          <th scope="row">Address</th>
+          <td>{{venue['address']}}</td>
+        </tr>
+        <tr *ngIf="venue['city'] || venue['state']">
+          <th scope="row">City</th>
+          <td>
+            <span *ngIf="venue['city']">{{venue['city']}}</span>
+            <span *ngIf="venue['city'] && venue['state']">, </span>
+            <span *ngIf="venue['state']">{{venue['state']}}</span>
+          </td>
+        </tr>
+        <tr *ngIf="venue['phone']">
+          <th scope="row">Phone Number</th>
+          <td>{{venue['phone']}}</td>
+        </tr>
+        <tr *ngIf="venue['hours']">
+          <th scope="row">Open Hours</th>
+          <td>{{venue['hours']}}</td>
+        </tr>
+        <tr *ngIf="venue['generalRule']">
+          <th scope="row">General Rule</th>
+          <td>{{venue['generalRule']}}</td>
+        </tr>
+        <tr *ngIf="venue['childRule']">
+          <th scope="row">Child Rule</th>
+          <td>{{venue['childRule']}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div *ngIf="venue['lat'] !== undefined && venue['lng'] !== undefined">
+        <agm-map [latitude]="getLat()" [longitude]="getLng()" [zoom]="14">
+          <agm-marker [latitude]="getLat()" [longitude]="getLng()"></agm-marker>
+        </agm-map>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="mode === 'UpcomingEvents'">
+    <div *ngIf="upComingEvents.length <= 0" class="mt-5">
+      <norecord></norecord>
+    </div>
+    <div *ngIf="upComingEvents && upComingEvents.length > 0">
+      <div class="input-group mb-2">
+        <select [(ngModel)]="keyword" name="keyword" class="custom-select col-3" id="keyword" (change)="sort()">
+          <option selected value="index">Default</option>
+          <option value="displayName">Event Name</option>
+          <option value="time">Time</option>
+          <option value="artist">Artist</option>
+          <option value="type">Type</option>
+        </select>
+        <select [(ngModel)]="order" name="order"  class="custom-select col-3" id="order" (change)="sort()"
+                [disabled]="keyword === 'index'">
+          <option selected value=1>Ascending</option>
+          <option value=-1>Descending</option>
+        </select>
+      </div>
+      <div *ngFor="let event of upComingEvents; let i = index">
+        <div class="card mt-2" *ngIf="i < 5">
+          <div class="card-body">
+            <a href="javascript: void(0)" (click)="onNavigate(event['uri'])">{{event['displayName']}}</a>
+            <div>
+              <span style="color: orange;">Artist: {{event['artist']}}  </span>
+              <span class="text-secondary">{{event['date'] | date}} </span>
+              <span class="text-secondary" *ngIf="event['time']">{{event['time']}}</span>
+            </div>
+            <div>Type: {{event['type']}}</div>
+          </div>
+        </div>
+      </div>
+      <div [@fade]="showMore ? 'less' : 'more'">
+        <div *ngFor="let event of upComingEvents; let i = index">
+          <div class="card mt-2 img-card" *ngIf="i >= 5">
+            <div class="card-body" >
+              <a href="javascript: void(0)" (click)="onNavigate(event['uri'])">{{event['displayName']}}</a>
+              <div>
+                <span style="color: orange;">Artist: {{event['artist']}}  </span>
+                <span class="text-secondary">{{event['date'] | date}} </span>
+                <span class="text-secondary" *ngIf="event['time']">{{event['time']}}</span>
+              </div>
+              <div>Type: {{event['type']}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center p-5">
+        <button *ngIf="showMore" (click)="showMore = false" class="btn btn-primary">Show More</button>
+        <button *ngIf="!showMore" (click)="showMore = true" class="btn btn-primary">Show Less</button>
+      </div>
+    </div>
+  </div>
+</div>
+

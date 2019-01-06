@@ -1,0 +1,142 @@
+<form #form="ngForm" (ngSubmit)="onSubmit(form)" (reset)="onReset()">
+  <div class="form-group row">
+    <label for="keyword" class="col-sm-2 col-form-label">Keyword</label>
+    <div class="col-sm-10">
+      <input
+        required
+        (input)="recommend()"
+        [(ngModel)]="keywordValue"
+        ngModel
+        name="keyword"
+        #keyword="ngModel"
+        id="keyword"
+        type="text"
+        class="form-control"
+        placeholder="Enter Artist, Team or Event Name (eg. Lakers)">
+      <div class="alert alert-danger"
+           *ngIf="keyword.touched && !keyword.valid">
+        Please enter a keyword.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="category" class="col-sm-2 col-form-label">Category</label>
+    <div class="col-sm-3">
+      <select [(ngModel)]="category"
+              name="category"
+              id="category"
+              class="form-control">
+        <option value="All" selected>All</option>
+        <option value="Music">Music</option>
+        <option value="Sports">Sports</option>
+        <option value="Arts & Theatre">Arts & Theatre</option>
+        <option value="Film">Film</option>
+        <option value="Miscellaneous">Miscellaneous</option>
+      </select>
+    </div>
+  </div>
+
+
+
+  <div class="form-group row">
+    <label for="distance" class="col-sm-2 col-form-label">Distance</label>
+    <div class="col-sm-3">
+      <input
+        pattern="^[0-9]+$"
+        ngModel
+        name="radius"
+        #distance="ngModel"
+        placeholder="10"
+        id="distance"
+        type="text"
+        class="form-control">
+      <div class="alert alert-danger"
+           *ngIf="!distance.valid">
+        Distance can only be digits.
+      </div>
+    </div>
+    <div  class="col-sm-3">
+      <select [(ngModel)]="unit"
+              name="unit"
+              class="form-control">
+        <option value="miles">Miles</option>
+        <option value="km">Kilometers</option>
+      </select>
+    </div>
+  </div>
+
+
+
+  <fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-2 pt-0">From</legend>
+      <div class="col-sm-10" ngModelGroup="position" #position="ngModelGroup" (load)="log(position)">
+
+        <div class="form-check">
+          <input
+            [(ngModel)]="positionMode"
+            class="form-check-input"
+            type="radio"
+            name="positionMode"
+            value="location"
+            id="location-radio"
+            checked>
+          <label class="form-check-label" for="location-radio">
+            Current location
+          </label>
+          <!--<input-->
+            <!--hidden-->
+            <!--ngModel-->
+            <!--name="location"-->
+            <!--#location="ngModel"-->
+            <!--id="location"-->
+            <!--type="text">-->
+        </div>
+
+        <div class="form-check">
+          <input [(ngModel)]="positionMode"
+                 class="form-check-input"
+                 type="radio"
+                 name="positionMode"
+                 value="address"
+                 id="address-radio">
+          <label class="form-check-label" for="address">
+            Other. Please specify:
+          </label>
+          <input
+            [disabled]="!positionMode||positionMode=='location'"
+            ngModel
+            name="address"
+            #address="ngModel"
+            id="address"
+            type="text"
+            class="form-control">
+        </div>
+
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-group row">
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-primary" [disabled]="!form.valid||!location">Search</button>
+    </div>
+    <div class="col-sm-10">
+      <button type="reset" class="btn">Clear</button>
+    </div>
+  </div>
+  <!--<mat-form-field class="example-full-width">-->
+    <!--<input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">-->
+    <!--<mat-autocomplete #auto="matAutocomplete">-->
+      <!--<mat-option *ngFor="let option of options" [value]="option">-->
+        <!--{{option}}-->
+      <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+  <!--</mat-form-field>-->
+</form>
+<p>
+  {{ form.value | json }}
+</p>
+
+

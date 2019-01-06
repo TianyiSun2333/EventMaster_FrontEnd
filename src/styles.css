@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.form-control.ng-touched.ng-invalid {
+  border: 2px solid red;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-tooltip {
+  font-size: 14px !important;
+}
+
+agm-map {
+  height: 300px;
+}
+
+.selected-event {
+  background: #f4db9e;
+}
+
+.invalid-input {
+  border: 2px solid red;
+}
+
+.artist-img {
+  min-width: 200px;
+}

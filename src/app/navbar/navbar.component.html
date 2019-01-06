@@ -1,0 +1,17 @@
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a
+      (click)="onClickResults()"
+      class="nav-link active"
+      [class.active]="mode === 'Results'"
+      href="javascript:void(0)">
+      Results</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickFavorites()"
+      class="nav-link"
+      [class.active]="mode === 'Favorites'"
+      href="javascript:void(0)">Favorites</a>
+  </li>
+</ul>
